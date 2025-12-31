@@ -55,6 +55,13 @@ app_setup(){
     VALIDATE $? "Unzip $app_name"
 }
 
+python_setup(){
+    dnf install python3 gcc python3-devel -y &>>$LOG_FILE
+    VALIDATE $? 'Installing Python3'
+    pip3 install -r requirements.txt
+    VALIDATE $? 'Installing Dependencies'
+}
+
 java_setup(){
     dnf install maven -y &>>$LOG_FILE
     VALIDATE $? 'Installed Maven'
