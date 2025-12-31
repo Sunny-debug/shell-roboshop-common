@@ -58,8 +58,9 @@ app_setup(){
 java_setup(){
     dnf install maven -y &>>$LOG_FILE
     VALIDATE $? 'Installed Maven'
+    curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
     mvn clean package 
-    VALIDATE $? 'Packing the Application'
+    VALIDATE $? 'Packaging the Application'
     mv target/shipping-1.0.jar shipping.jar 
     VALIDATE $? 'Renaming the Artifact'
 
