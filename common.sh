@@ -34,7 +34,7 @@ VALIDATE(){ # functions receive inputs through args just like shell script args
 app_setup(){
     id roboshop &>>$LOG_FILE
     if [ $? -ne 0 ]; then
-        useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+        useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
         VALIDATE $? "Creating USER"
     else   
         echo -e "USER already exists $Y ... SKIPPING ... $N"
@@ -84,7 +84,7 @@ Nodejs_setup(){
 }
 
 systemd_setup(){
-    cp $SCRIPT_DIR/$app_name.service /etc/systemd/system/catalogue.service
+    cp $SCRIPT_DIR/$app_name.service /etc/systemd/system/$app_name.service
     VALIDATE $? "Systemctl Service"
     systemctl daemon-reload
     VALIDATE $? "Daemon Reload"
