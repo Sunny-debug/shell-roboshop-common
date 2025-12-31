@@ -42,7 +42,7 @@ app_setup(){
     mkdir -p /app 
     VALIDATE $? "Creating App Dir"
 
-    curl -o /tmp/$app_name.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
+    curl -o /tmp/$app_name.zip https://roboshop-artifacts.s3.amazonaws.com/$app_name-v3.zip &>>$LOG_FILE
     VALIDATE $? "Downloading $app_name Application"
 
     cd /app 
@@ -65,12 +65,10 @@ python_setup(){
 java_setup(){
     dnf install maven -y &>>$LOG_FILE
     VALIDATE $? 'Installed Maven'
-    curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
-    mvn clean package 
+    mvn clean package &>>$LOG_FILE
     VALIDATE $? 'Packaging the Application'
-    mv target/shipping-1.0.jar shipping.jar 
+    mv target/shipping-1.0.jar shipping.jar &>>$LOG_FILE
     VALIDATE $? 'Renaming the Artifact'
-
 }
 
 Nodejs_setup(){
