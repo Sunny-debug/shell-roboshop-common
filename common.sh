@@ -29,8 +29,53 @@ VALIDATE(){ # functions receive inputs through args just like shell script args
     fi
 }
 
+Nodejs_setup(){
+    dnf module disable nodejs -y &>>$LOG_FILE
+    VALIDATE $? "Disabling Nodejs"
+    dnf module enable nodejs:20 -y &>>$LOG_FILE
+    VALIDATE $? "Enabling Nodejs 20"
+    dnf install nodejs -y &>>$LOG_FILE
+    VALIDATE $? "Installing Nodejs"
+
+    npm install &>>$LOG_FILE
+    VALIDATE $? "Install Dep" 
+}
+
+app_setup(){
+    mkdir -p /app 
+    VALIDATE $? "Creating App Dir"
+
+    curl -o /tmp/$app_name.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
+    VALIDATE $? "Downloading $app_name Application"
+
+    cd /app 
+    VALIDATE $? "Changing to App Dir"
+
+    rm -rf /app/*
+    VALIDATE $? "Removing Existing Code"
+
+    unzip /tmp/$app_name.zip &>>$LOG_FILE
+    VALIDATE $? "Unzip $app_name"
+}
+
+systemd_setup(){
+    cp $SCRIPT_DIR/$app_name.service /etc/systemd/system/catalogue.service
+    VALIDATE $? "Systemctl Service"
+    systemctl daemon-reload
+    VALIDATE $? "Daemon Reload"
+
+    systemctl enable $app_name &>>$LOG_FILE
+    VALIDATE $? "Enable $app_name" 
+}
+
+app_restart(){
+    systemctl restart $app_name
+    VALIDATE $? "Restarted $app_name"
+}
+
 print_total_time(){
     END_TIME=$(date +%s)
     TOTAL_TIME=$(( $END_TIME - $START_TIME ))
     echo -e "Script executed in $Y $TOTAL_TIME Seconds $N"
 }
+
