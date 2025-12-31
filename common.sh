@@ -31,18 +31,6 @@ VALIDATE(){ # functions receive inputs through args just like shell script args
     fi
 }
 
-Nodejs_setup(){
-    dnf module disable nodejs -y &>>$LOG_FILE
-    VALIDATE $? "Disabling Nodejs"
-    dnf module enable nodejs:20 -y &>>$LOG_FILE
-    VALIDATE $? "Enabling Nodejs 20"
-    dnf install nodejs -y &>>$LOG_FILE
-    VALIDATE $? "Installing Nodejs"
-
-    npm install &>>$LOG_FILE
-    VALIDATE $? "Install Dep" 
-}
-
 app_setup(){
     id roboshop &>>$LOG_FILE
     if [ $? -ne 0 ]; then
@@ -65,6 +53,18 @@ app_setup(){
 
     unzip /tmp/$app_name.zip &>>$LOG_FILE
     VALIDATE $? "Unzip $app_name"
+}
+
+Nodejs_setup(){
+    dnf module disable nodejs -y &>>$LOG_FILE
+    VALIDATE $? "Disabling Nodejs"
+    dnf module enable nodejs:20 -y &>>$LOG_FILE
+    VALIDATE $? "Enabling Nodejs 20"
+    dnf install nodejs -y &>>$LOG_FILE
+    VALIDATE $? "Installing Nodejs"
+
+    npm install &>>$LOG_FILE
+    VALIDATE $? "Install Dep" 
 }
 
 systemd_setup(){
