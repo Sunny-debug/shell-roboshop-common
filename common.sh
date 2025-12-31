@@ -55,6 +55,16 @@ app_setup(){
     VALIDATE $? "Unzip $app_name"
 }
 
+java_setup(){
+    dnf install maven -y &>>$LOG_FILE
+    VALIDATE $? 'Installed Maven'
+    mvn clean package 
+    VALIDATE $? 'Packing the Application'
+    mv target/shipping-1.0.jar shipping.jar 
+    VALIDATE $? 'Renaming the Artifact'
+
+}
+
 Nodejs_setup(){
     dnf module disable nodejs -y &>>$LOG_FILE
     VALIDATE $? "Disabling Nodejs"
